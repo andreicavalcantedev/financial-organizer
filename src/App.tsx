@@ -2,8 +2,8 @@ import { useState } from "react"
 import { AddNewTransactionModal } from "./components/AddNewTransactionModal/AddNewTransactionModal"
 
 export const App = () => {
-
   const [isAddNewTransactionModalOpened,  setIsAddNewTransactionModalOpened] = useState<boolean>(false)
+  
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -67,8 +67,6 @@ export const App = () => {
       </main>
 
       <AddNewTransactionModal
-        title="teste"
-        description="seila descricao"
         isOpen={isAddNewTransactionModalOpened}
         setIsOpen={setIsAddNewTransactionModalOpened}
         action={() => {}}
