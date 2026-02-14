@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { Header } from "./components/Header/header"
-import { GenericModal } from "./components/GenericModal/GenericModal"
+import { AddNewTransactionModal } from "./components/AddNewTransactionModal/AddNewTransactionModal"
 
 export const App = () => {
 
@@ -8,7 +7,14 @@ export const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <Header />
+      <header className="border-b bg-white">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+          <h1 className="text-xl font-semibold">Organizador Financeiro</h1>
+          <button className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700" onClick={() => setIsAddNewTransactionModalOpened(true)}>
+            Nova transação
+          </button>
+        </div>
+      </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8">
         <section className="grid gap-4 md:grid-cols-3">
@@ -60,7 +66,7 @@ export const App = () => {
         </section>
       </main>
 
-      <GenericModal
+      <AddNewTransactionModal
         title="teste"
         description="seila descricao"
         isOpen={isAddNewTransactionModalOpened}

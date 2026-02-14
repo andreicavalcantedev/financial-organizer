@@ -6,7 +6,7 @@ interface GenericModalProps {
     action: () => void;
 }
 
-export const GenericModal = ({ title, description, isOpen, setIsOpen, action }: GenericModalProps) => {
+export const AddNewTransactionModal = ({ title, description, isOpen, setIsOpen, action }: GenericModalProps) => {
     return (
         <div className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? 'block' : 'hidden'}`}>
             <div className="absolute inset-0 bg-black opacity-50" onClick={() => setIsOpen(false)}></div>
