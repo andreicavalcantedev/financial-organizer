@@ -10,7 +10,7 @@ export const useAddNewTransaction = ({
 }: UseAddNewTransactionProps) => {
   const [formData, setFormData] = useState<TransactionFormData>({
     name: '',
-    amount: '',
+    amount: 0,
     type: 'income',
     date: new Date().toISOString().split('T')[0],
     description: '',
@@ -21,7 +21,7 @@ export const useAddNewTransaction = ({
   const resetForm = () => {
     setFormData({
       name: '',
-      amount: '',
+      amount: 0,
       type: 'income',
       date: new Date().toISOString().split('T')[0],
       description: '',
@@ -34,6 +34,10 @@ export const useAddNewTransaction = ({
       setFormData(prev => ({...prev, [field]: e.target.value}));
     };
 
+  const handleAmountChange = (cents: number) => {
+    setFormData(prev => ({...prev, amount: cents}));
+  };
+
   const handleSelectChange = (value: string) => {
     setFormData(prev => ({...prev, type: value as TransactionType}));
   };
@@ -41,8 +45,7 @@ export const useAddNewTransaction = ({
   const isFormValid = useMemo(() => {
     return (
       formData.name.trim().length > 0 &&
-      !isNaN(parseFloat(formData.amount)) &&
-      parseFloat(formData.amount) > 0 &&
+      formData.amount > 0 &&
       formData.date !== ''
     );
   }, [formData]);
@@ -56,6 +59,7 @@ export const useAddNewTransaction = ({
   return {
     formData,
     handleInputChange,
+    handleAmountChange,
     handleSelectChange,
     resetForm,
     isFormValid,

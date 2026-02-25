@@ -23,6 +23,7 @@ export const AddNewTransactionModal = ({
   const {
     formData,
     handleInputChange,
+    handleAmountChange,
     handleSelectChange,
     resetForm,
     isFormValid,
@@ -79,10 +80,7 @@ export const AddNewTransactionModal = ({
 
           <div className="space-y-2">
             <Label htmlFor="amount">Valor *</Label>
-            <InputMoney
-              value={formData.amount}
-              onChange={handleInputChange('amount')}
-            />
+            <InputMoney value={formData.amount} onChange={handleAmountChange} />
           </div>
 
           <div className="space-y-2">
