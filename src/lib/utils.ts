@@ -46,3 +46,20 @@ export function groupByMonth(
     });
   return incomeByMonth;
 }
+
+export function groupByMonthCombined(transactions: Transaction[]) {
+  const incomeData = groupByMonth(transactions, 'income');
+  const expenseData = groupByMonth(transactions, 'expense');
+
+  return incomeData.map((item, index) => ({
+    month: item.month,
+    income: item.value,
+    expense: expenseData[index].value,
+  }));
+}
+
+export const formatBRL = (value: number) =>
+  new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);

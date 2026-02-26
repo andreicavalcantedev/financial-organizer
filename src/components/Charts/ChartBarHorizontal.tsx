@@ -19,7 +19,7 @@ import type {
   Transaction,
   TransactionType,
 } from '@/hooks/useAddNewTransaction/types';
-import {groupByMonth} from '@/lib/utils';
+import {formatBRL, groupByMonth} from '@/lib/utils';
 
 const CONFIG: Record<
   TransactionType,
@@ -74,10 +74,7 @@ export function ChartBarHorizontal({
   const total = data.reduce((acc, m) => acc + m.value, 0);
   const hasData = total > 0;
 
-  const formattedTotal = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(total);
+  const formattedTotal = formatBRL(total);
 
   return (
     <Card className="flex flex-col h-full">
@@ -108,10 +105,7 @@ export function ChartBarHorizontal({
                   <ChartTooltipContent
                     hideLabel
                     formatter={value =>
-                      new Intl.NumberFormat('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
-                      }).format(Number(value))
+                      formatBRL(Number(value))
                     }
                   />
                 }

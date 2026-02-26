@@ -1,12 +1,11 @@
 import {Link, useOutletContext} from 'react-router-dom';
+import {ChartLineMultiple} from '../components/Charts/ChartLineMultiple';
 import {LatestTransactions} from '../components/LatestTransactions/LatestTransactions';
-import {AnyTransactionsWarning} from '../components/AnyTransactionsWarning/AnyTransactionsWarning';
 import type {RootLayoutContext} from '../layouts/RootLayout';
 import {ArrowLeft} from 'lucide-react';
 
 export const AllTransactions = () => {
   const {transactions} = useOutletContext<RootLayoutContext>();
-  const hasTransactions = transactions.length > 0;
 
   return (
     <section>
@@ -21,7 +20,10 @@ export const AllTransactions = () => {
         <h2 className="text-lg font-semibold">Todas as transações</h2>
       </div>
 
-      {hasTransactions ? (
+      <div className="mt-4">
+        <ChartLineMultiple transactions={transactions} />
+      </div>
+
         <ul className="mt-4 divide-y rounded-lg border bg-white">
           {transactions.map(transaction => (
             <LatestTransactions
@@ -33,9 +35,6 @@ export const AllTransactions = () => {
             />
           ))}
         </ul>
-      ) : (
-        <AnyTransactionsWarning />
-      )}
     </section>
   );
 };

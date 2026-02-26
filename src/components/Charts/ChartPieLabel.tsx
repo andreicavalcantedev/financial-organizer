@@ -15,8 +15,7 @@ import {
 } from '../ui/card';
 import type {Transaction} from '@/hooks/useAddNewTransaction/types';
 import {TrendingUp} from 'lucide-react';
-
-export const description = 'A pie chart with a label';
+import {formatBRL} from '@/lib/utils';
 
 interface ChartPieLabelProps {
   title: string;
@@ -49,10 +48,7 @@ export function ChartPieLabel({title, transactions}: ChartPieLabelProps) {
   } satisfies ChartConfig;
 
   const total = totalIncome - totalExpense;
-  const formattedTotal = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(total);
+  const formattedTotal = formatBRL(total);
 
   const hasNoTransactions = totalIncome === 0 && totalExpense === 0;
 
@@ -78,12 +74,7 @@ export function ChartPieLabel({title, transactions}: ChartPieLabelProps) {
                 content={
                   <ChartTooltipContent
                     hideLabel
-                    formatter={value =>
-                      new Intl.NumberFormat('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
-                      }).format(Number(value))
-                    }
+                    formatter={value => formatBRL(Number(value))}
                   />
                 }
               />
@@ -99,10 +90,7 @@ export function ChartPieLabel({title, transactions}: ChartPieLabelProps) {
                 iconType="circle"
                 iconSize={10}
                 formatter={(value, entry) =>
-                  `${value}: ${new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  }).format(Number(entry?.payload?.value ?? 0))}`
+                  `${value}: ${formatBRL(Number(entry?.payload?.value ?? 0))}`
                 }
               />
             </PieChart>
