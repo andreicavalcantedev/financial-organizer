@@ -53,7 +53,7 @@ export function ChartLineMultiple({transactions}: ChartLineMultipleProps) {
             <LineChart
               accessibilityLayer
               data={data}
-              margin={{left: 12, right: 12}}
+              margin={{left: 12, right: 12, top: 10}}
             >
               <CartesianGrid vertical={false} />
               <XAxis
