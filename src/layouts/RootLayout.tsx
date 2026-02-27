@@ -6,7 +6,7 @@ import type {
   Transaction,
   TransactionFormData,
 } from '../hooks/useAddNewTransaction/types';
-import {format} from 'date-fns';
+import {format, parse} from 'date-fns';
 
 export interface RootLayoutContext {
   transactions: Transaction[];
@@ -19,7 +19,7 @@ export const RootLayout = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const handleAddTransaction = useCallback((data: TransactionFormData) => {
-    const transactionDate = new Date(data.date);
+    const transactionDate = parse(data.date, 'yyyy-MM-dd', new Date());
     const formattedDate = format(transactionDate, 'dd/MM/yyyy');
 
     const newTransaction: Transaction = {
