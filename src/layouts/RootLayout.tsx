@@ -10,6 +10,7 @@ import {format} from 'date-fns';
 
 export interface RootLayoutContext {
   transactions: Transaction[];
+  onDeleteTransaction: (id: string) => void;
 }
 
 export const RootLayout = () => {
@@ -33,6 +34,10 @@ export const RootLayout = () => {
     setTransactions(prev => [newTransaction, ...prev]);
   };
 
+  const handleDeleteTransaction = (id: string) => {
+    setTransactions(prev => prev.filter(t => t.id !== id));
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b bg-white">
@@ -47,7 +52,12 @@ export const RootLayout = () => {
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8">
-        <Outlet context={{transactions} satisfies RootLayoutContext} />
+        <Outlet
+          context={{
+            transactions,
+            onDeleteTransaction: handleDeleteTransaction,
+          } satisfies RootLayoutContext}
+        />
       </main>
 
       <AddNewTransactionModal
