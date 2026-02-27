@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import {Outlet, Link} from 'react-router-dom';
 import {AddNewTransactionModal} from '../components/AddNewTransactionModal/AddNewTransactionModal';
 import {Button} from '../components/ui/button';
@@ -18,7 +18,7 @@ export const RootLayout = () => {
     useState<boolean>(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const handleAddTransaction = (data: TransactionFormData) => {
+  const handleAddTransaction = useCallback((data: TransactionFormData) => {
     const transactionDate = new Date(data.date);
     const formattedDate = format(transactionDate, 'dd/MM/yyyy');
 
@@ -32,11 +32,16 @@ export const RootLayout = () => {
     };
 
     setTransactions(prev => [newTransaction, ...prev]);
-  };
+  }, []);
 
-  const handleDeleteTransaction = (id: string) => {
-    setTransactions(prev => prev.filter(t => t.id !== id));
-  };
+  const handleDeleteTransaction = useCallback((id: string) => {
+    setTransactions(prev => prev.filter(transaction => transaction.id !== id));
+  }, []);
+
+  const outletContext = useMemo<RootLayoutContext>(
+    () => ({transactions, onDeleteTransaction: handleDeleteTransaction}),
+    [transactions, handleDeleteTransaction],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -52,12 +57,7 @@ export const RootLayout = () => {
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8">
-        <Outlet
-          context={{
-            transactions,
-            onDeleteTransaction: handleDeleteTransaction,
-          } satisfies RootLayoutContext}
-        />
+        <Outlet context={outletContext} />
       </main>
 
       <AddNewTransactionModal

@@ -1,3 +1,4 @@
+import {memo, useMemo} from 'react';
 import {TrendingUp} from 'lucide-react';
 import {CartesianGrid, Line, LineChart, XAxis} from 'recharts';
 
@@ -33,12 +34,24 @@ interface ChartLineMultipleProps {
   transactions: Transaction[];
 }
 
-export function ChartLineMultiple({transactions}: ChartLineMultipleProps) {
+export const ChartLineMultiple = memo(function ChartLineMultiple({
+  transactions,
+}: ChartLineMultipleProps) {
   const currentYear = new Date().getFullYear();
-  const data = groupByMonthCombined(transactions);
 
-  const totalIncome = data.reduce((acc, m) => acc + m.income, 0);
-  const totalExpense = data.reduce((acc, m) => acc + m.expense, 0);
+  const {monthlyData, totalIncome, totalExpense} = useMemo(() => {
+    const grouped = groupByMonthCombined(transactions);
+    const income = grouped.reduce(
+      (accumulator, month) => accumulator + month.income,
+      0,
+    );
+    const expense = grouped.reduce(
+      (accumulator, month) => accumulator + month.expense,
+      0,
+    );
+    return {monthlyData: grouped, totalIncome: income, totalExpense: expense};
+  }, [transactions]);
+
   const hasData = totalIncome > 0 || totalExpense > 0;
 
   return (
@@ -52,7 +65,7 @@ export function ChartLineMultiple({transactions}: ChartLineMultipleProps) {
           <ChartContainer config={chartConfig} className="h-[300px] w-full">
             <LineChart
               accessibilityLayer
-              data={data}
+              data={monthlyData}
               margin={{left: 12, right: 12, top: 10}}
             >
               <CartesianGrid vertical={false} />
@@ -113,4 +126,4 @@ export function ChartLineMultiple({transactions}: ChartLineMultipleProps) {
       </CardFooter>
     </Card>
   );
-}
+});

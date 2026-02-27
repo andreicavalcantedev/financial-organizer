@@ -1,3 +1,4 @@
+import {memo, useMemo} from 'react';
 import {TrendingDown, TrendingUp} from 'lucide-react';
 import {Bar, BarChart, XAxis, YAxis} from 'recharts';
 
@@ -52,17 +53,24 @@ interface ChartBarHorizontalProps {
   type: TransactionType;
 }
 
-export function ChartBarHorizontal({
+export const ChartBarHorizontal = memo(function ChartBarHorizontal({
   transactions,
   type,
 }: ChartBarHorizontalProps) {
   const currentYear = new Date().getFullYear();
   const {title, color, emptyMessage, EmptyIcon, footerLabel} = CONFIG[type];
 
-  const data = groupByMonth(transactions, type) as {
-    month: string;
-    value: number;
-  }[];
+  const {monthlyData, total} = useMemo(() => {
+    const grouped = groupByMonth(transactions, type) as {
+      month: string;
+      value: number;
+    }[];
+    const sum = grouped.reduce(
+      (accumulator, month) => accumulator + month.value,
+      0,
+    );
+    return {monthlyData: grouped, total: sum};
+  }, [transactions, type]);
 
   const chartConfig = {
     value: {
@@ -71,9 +79,7 @@ export function ChartBarHorizontal({
     },
   } satisfies ChartConfig;
 
-  const total = data.reduce((acc, m) => acc + m.value, 0);
   const hasData = total > 0;
-
   const formattedTotal = formatBRL(total);
 
   return (
@@ -87,7 +93,7 @@ export function ChartBarHorizontal({
           <ChartContainer config={chartConfig} className="h-[250px] w-full">
             <BarChart
               accessibilityLayer
-              data={data}
+              data={monthlyData}
               layout="vertical"
               margin={{left: -20}}
             >
@@ -131,4 +137,4 @@ export function ChartBarHorizontal({
       </CardFooter>
     </Card>
   );
-}
+});

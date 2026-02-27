@@ -1,3 +1,4 @@
+import {memo, useMemo} from 'react';
 import {Pie, PieChart, Legend} from 'recharts';
 import {
   ChartContainer,
@@ -17,38 +18,47 @@ import type {Transaction} from '@/hooks/useAddNewTransaction/types';
 import {TrendingUp} from 'lucide-react';
 import {formatBRL} from '@/lib/utils';
 
+const chartConfig = {
+  expense: {
+    label: 'Gastos',
+    color: 'var(--chart-2)',
+  },
+  income: {
+    label: 'Receitas',
+    color: 'var(--chart-1)',
+  },
+} satisfies ChartConfig;
+
 interface ChartPieLabelProps {
   title: string;
   transactions: Transaction[];
 }
 
-export function ChartPieLabel({title, transactions}: ChartPieLabelProps) {
-  const totalIncome = transactions
-    .filter(transaction => transaction.type === 'income')
-    .reduce((acc, transaction) => acc + transaction.amount / 100, 0);
+export const ChartPieLabel = memo(function ChartPieLabel({
+  title,
+  transactions,
+}: ChartPieLabelProps) {
+  const {totalIncome, totalExpense, chartData} = useMemo(() => {
+    const income = transactions
+      .filter(transaction => transaction.type === 'income')
+      .reduce((total, transaction) => total + transaction.amount / 100, 0);
 
-  const totalExpense = transactions
-    .filter(transaction => transaction.type === 'expense')
-    .reduce((acc, transaction) => acc + transaction.amount / 100, 0);
+    const expense = transactions
+      .filter(transaction => transaction.type === 'expense')
+      .reduce((total, transaction) => total + transaction.amount / 100, 0);
 
-  const chartData = [
-    {type: 'Gastos', value: totalExpense ?? 0, fill: 'var(--chart-2)'},
-    {type: 'Receitas', value: totalIncome ?? 0, fill: 'var(--chart-1)'},
-  ];
+    return {
+      totalIncome: income,
+      totalExpense: expense,
+      chartData: [
+        {type: 'Gastos', value: expense, fill: 'var(--chart-2)'},
+        {type: 'Receitas', value: income, fill: 'var(--chart-1)'},
+      ],
+    };
+  }, [transactions]);
 
-  const chartConfig = {
-    expense: {
-      label: 'Gastos',
-      color: 'var(--chart-2)',
-    },
-    income: {
-      label: 'Receitas',
-      color: 'var(--chart-1)',
-    },
-  } satisfies ChartConfig;
-
-  const total = totalIncome - totalExpense;
-  const formattedTotal = formatBRL(total);
+  const balance = totalIncome - totalExpense;
+  const formattedBalance = formatBRL(balance);
 
   const hasNoTransactions = totalIncome === 0 && totalExpense === 0;
 
@@ -102,9 +112,9 @@ export function ChartPieLabel({title, transactions}: ChartPieLabelProps) {
           Período: {new Date().getFullYear()}
         </div>
         <div className="flex gap-2 leading-none font-medium">
-          Total: {formattedTotal}
+          Total: {formattedBalance}
         </div>
       </CardFooter>
     </Card>
   );
-}
+});

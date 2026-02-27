@@ -1,7 +1,9 @@
-import {useEffect, useRef, useState} from 'react';
+import {memo, useEffect, useRef, useState} from 'react';
 import {MoreVertical} from 'lucide-react';
 import {Button} from '../ui/button';
 import {cn} from '@/lib/utils';
+
+const DROPDOWN_ESTIMATED_HEIGHT = 80;
 
 interface LatestTransactionsProps {
   title: string;
@@ -9,25 +11,24 @@ interface LatestTransactionsProps {
   date?: string;
   amount: number;
   transactionId?: string;
-  onDeleteClick?: () => void;
+  onDeleteClick: (transactionId: string) => void;
   onEditClick?: () => void;
 }
 
-export const LatestTransactions = ({
+export const LatestTransactions = memo(function LatestTransactions({
   title,
   transactionType,
   date,
   amount,
+  transactionId,
   onDeleteClick,
   onEditClick,
-}: LatestTransactionsProps) => {
+}: LatestTransactionsProps) {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [openAbove, setOpenAbove] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const hasActions = onDeleteClick !== undefined || onEditClick !== undefined;
-
-  const DROPDOWN_ESTIMATED_HEIGHT = 80;
 
   const handleToggleMenu = () => {
     if (!menuOpen) {
@@ -62,19 +63,19 @@ export const LatestTransactions = ({
   }, [menuOpen]);
 
   const isIncome = transactionType === 'income';
-  const transactionColor = isIncome ? 'text-emerald-600' : 'text-rose-600';
-  const formattedTotal = new Intl.NumberFormat('pt-BR', {
+  const amountColor = isIncome ? 'text-emerald-600' : 'text-rose-600';
+  const formattedAmount = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
   }).format(amount / 100);
 
-  const amountToDisplay = isIncome
-    ? `+ ${formattedTotal}`
-    : `- ${formattedTotal}`;
+  const displayAmount = isIncome
+    ? `+ ${formattedAmount}`
+    : `- ${formattedAmount}`;
 
   const handleDeleteClick = () => {
     setMenuOpen(false);
-    onDeleteClick?.();
+    if (transactionId) onDeleteClick(transactionId);
   };
 
   return (
@@ -84,8 +85,8 @@ export const LatestTransactions = ({
         <p className="text-sm text-slate-500">{date}</p>
       </div>
       <div className="flex items-center gap-2">
-        <span className={`font-medium ${transactionColor}`}>
-          {amountToDisplay}
+        <span className={`font-medium ${amountColor}`}>
+          {displayAmount}
         </span>
         {hasActions && (
           <div className="relative" ref={menuRef}>
@@ -135,4 +136,4 @@ export const LatestTransactions = ({
       </div>
     </li>
   );
-};
+});

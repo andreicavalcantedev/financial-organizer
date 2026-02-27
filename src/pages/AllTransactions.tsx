@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {Link, useOutletContext} from 'react-router-dom';
 import {ChartLineMultiple} from '../components/Charts/ChartLineMultiple';
 import {DeleteTransactionModal} from '../components/DeleteTransactionModal/DeleteTransactionModal';
@@ -13,12 +13,26 @@ export const AllTransactions = () => {
   const [transactionToDelete, setTransactionToDelete] =
     useState<Transaction | null>(null);
 
-  const handleConfirmDelete = () => {
+  const handleDeleteClick = useCallback(
+    (transactionId: string) => {
+      const transaction = transactions.find(
+        transaction => transaction.id === transactionId,
+      );
+      if (transaction) setTransactionToDelete(transaction);
+    },
+    [transactions],
+  );
+
+  const handleCloseModal = useCallback(() => {
+    setTransactionToDelete(null);
+  }, []);
+
+  const handleConfirmDelete = useCallback(() => {
     if (transactionToDelete) {
       onDeleteTransaction(transactionToDelete.id);
       setTransactionToDelete(null);
     }
-  };
+  }, [transactionToDelete, onDeleteTransaction]);
 
   return (
     <section>
@@ -46,14 +60,14 @@ export const AllTransactions = () => {
             transactionType={transaction.type}
             date={transaction.date}
             amount={transaction.amount}
-            onDeleteClick={() => setTransactionToDelete(transaction)}
+            onDeleteClick={handleDeleteClick}
           />
         ))}
       </ul>
 
       <DeleteTransactionModal
         isOpen={transactionToDelete !== null}
-        onClose={() => setTransactionToDelete(null)}
+        onClose={handleCloseModal}
         transactionName={transactionToDelete?.name ?? ''}
         onConfirm={handleConfirmDelete}
       />

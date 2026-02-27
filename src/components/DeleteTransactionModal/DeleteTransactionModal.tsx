@@ -1,3 +1,4 @@
+import {memo} from 'react';
 import {Button} from '../ui/button';
 
 interface DeleteTransactionModalProps {
@@ -7,12 +8,12 @@ interface DeleteTransactionModalProps {
   onConfirm: () => void;
 }
 
-export const DeleteTransactionModal = ({
+export const DeleteTransactionModal = memo(function DeleteTransactionModal({
   isOpen,
   onClose,
   transactionName,
   onConfirm,
-}: DeleteTransactionModalProps) => {
+}: DeleteTransactionModalProps) {
   if (!isOpen) return null;
 
   const handleConfirm = () => {
@@ -54,4 +55,4 @@ export const DeleteTransactionModal = ({
       </div>
     </div>
   );
-};
+});
