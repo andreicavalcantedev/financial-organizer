@@ -95,6 +95,7 @@ export function ChartBarHorizontal({
               <YAxis
                 dataKey="month"
                 type="category"
+                interval={0}
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
