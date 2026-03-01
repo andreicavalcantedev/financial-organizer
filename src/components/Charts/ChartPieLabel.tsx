@@ -16,7 +16,7 @@ import {
 } from '../ui/card';
 import type {Transaction} from '@/hooks/useAddNewTransaction/types';
 import {TrendingUp} from 'lucide-react';
-import {formatBRL} from '@/lib/utils';
+import {formatBRL} from '@/utils/formatBRL';
 
 const chartConfig = {
   expense: {

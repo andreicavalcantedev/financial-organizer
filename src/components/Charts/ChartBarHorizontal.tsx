@@ -20,7 +20,8 @@ import type {
   Transaction,
   TransactionType,
 } from '@/hooks/useAddNewTransaction/types';
-import {formatBRL, groupByMonth} from '@/lib/utils';
+import {formatBRL} from '@/utils/formatBRL';
+import {groupByMonth} from '@/utils/groupByMonth';
 
 const CONFIG: Record<
   TransactionType,
@@ -111,9 +112,7 @@ export const ChartBarHorizontal = memo(function ChartBarHorizontal({
                 content={
                   <ChartTooltipContent
                     hideLabel
-                    formatter={value =>
-                      formatBRL(Number(value))
-                    }
+                    formatter={value => formatBRL(Number(value))}
                   />
                 }
               />

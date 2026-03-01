@@ -19,6 +19,8 @@ export const AllTransactions = () => {
     useState<Transaction | null>(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
+  const hasTransactions = transactions.length > 0;
+
   const handleDeleteClick = useCallback(
     (transactionId: string) => {
       const transaction = transactions.find(
@@ -58,10 +60,6 @@ export const AllTransactions = () => {
     setIsExportModalOpen(false);
   }, []);
 
-  const handleConfirmExport = useCallback(() => {
-    setIsExportModalOpen(false);
-  }, []);
-
   return (
     <section>
       <div className="flex items-center justify-between gap-4">
@@ -75,7 +73,11 @@ export const AllTransactions = () => {
           </Link>
           <h2 className="text-lg font-semibold">Todas as transações</h2>
         </div>
-        <Button onClick={() => setIsExportModalOpen(true)}>
+        <Button
+          disabled={!hasTransactions}
+          variant={!hasTransactions ? 'outline' : 'default'}
+          onClick={() => setIsExportModalOpen(true)}
+        >
           Exportar dados
         </Button>
       </div>
@@ -115,8 +117,8 @@ export const AllTransactions = () => {
 
       <ExportDataModal
         isOpen={isExportModalOpen}
+        transactions={transactions}
         onClose={handleCloseExportModal}
-        onConfirm={handleConfirmExport}
       />
     </section>
   );

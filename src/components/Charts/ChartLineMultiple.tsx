@@ -17,7 +17,8 @@ import {
   type ChartConfig,
 } from '@/components/ui/chart';
 import type {Transaction} from '@/hooks/useAddNewTransaction/types';
-import {formatBRL, groupByMonthCombined} from '@/lib/utils';
+import {formatBRL} from '@/utils/formatBRL';
+import {groupByMonthCombined} from '@/utils/groupByMonthCombined';
 
 const chartConfig = {
   income: {
