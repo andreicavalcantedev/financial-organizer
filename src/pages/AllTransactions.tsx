@@ -2,15 +2,18 @@ import {useCallback, useState} from 'react';
 import {Link, useOutletContext} from 'react-router-dom';
 import {ChartLineMultiple} from '../components/Charts/ChartLineMultiple';
 import {DeleteTransactionModal} from '../components/DeleteTransactionModal/DeleteTransactionModal';
+import {EditTransactionModal} from '../components/EditTransactionModal/EditTransactionModal';
 import {LatestTransactions} from '../components/LatestTransactions/LatestTransactions';
 import type {Transaction} from '../hooks/useAddNewTransaction/types';
 import type {RootLayoutContext} from '../layouts/RootLayout';
 import {ArrowLeft} from 'lucide-react';
 
 export const AllTransactions = () => {
-  const {transactions, onDeleteTransaction} =
+  const {transactions, onDeleteTransaction, onEditTransaction} =
     useOutletContext<RootLayoutContext>();
   const [transactionToDelete, setTransactionToDelete] =
+    useState<Transaction | null>(null);
+  const [transactionToEdit, setTransactionToEdit] =
     useState<Transaction | null>(null);
 
   const handleDeleteClick = useCallback(
@@ -23,8 +26,22 @@ export const AllTransactions = () => {
     [transactions],
   );
 
-  const handleCloseModal = useCallback(() => {
+  const handleEditClick = useCallback(
+    (transactionId: string) => {
+      const transaction = transactions.find(
+        transaction => transaction.id === transactionId,
+      );
+      if (transaction) setTransactionToEdit(transaction);
+    },
+    [transactions],
+  );
+
+  const handleCloseDeleteModal = useCallback(() => {
     setTransactionToDelete(null);
+  }, []);
+
+  const handleCloseEditModal = useCallback(() => {
+    setTransactionToEdit(null);
   }, []);
 
   const handleConfirmDelete = useCallback(() => {
@@ -61,15 +78,23 @@ export const AllTransactions = () => {
             date={transaction.date}
             amount={transaction.amount}
             onDeleteClick={handleDeleteClick}
+            onEditClick={handleEditClick}
           />
         ))}
       </ul>
 
       <DeleteTransactionModal
         isOpen={transactionToDelete !== null}
-        onClose={handleCloseModal}
+        onClose={handleCloseDeleteModal}
         transactionName={transactionToDelete?.name ?? ''}
         onConfirm={handleConfirmDelete}
+      />
+
+      <EditTransactionModal
+        key={transactionToEdit?.id ?? 'closed'}
+        transaction={transactionToEdit}
+        onClose={handleCloseEditModal}
+        onConfirm={onEditTransaction}
       />
     </section>
   );

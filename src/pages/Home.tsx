@@ -43,6 +43,7 @@ export const Home = () => {
               .map(transaction => (
                 <LatestTransactions
                   key={transaction.id}
+                  transactionId={transaction.id}
                   title={transaction.name}
                   transactionType={transaction.type}
                   date={transaction.date}

@@ -10,9 +10,9 @@ interface LatestTransactionsProps {
   transactionType: string;
   date?: string;
   amount: number;
-  transactionId?: string;
-  onDeleteClick: (transactionId: string) => void;
-  onEditClick?: () => void;
+  transactionId: string;
+  onDeleteClick?: (transactionId: string) => void;
+  onEditClick?: (transactionId: string) => void;
 }
 
 export const LatestTransactions = memo(function LatestTransactions({
@@ -73,9 +73,14 @@ export const LatestTransactions = memo(function LatestTransactions({
     ? `+ ${formattedAmount}`
     : `- ${formattedAmount}`;
 
-  const handleDeleteClick = () => {
+  const handleDeleteTransaction = () => {
     setMenuOpen(false);
-    if (transactionId) onDeleteClick(transactionId);
+    onDeleteClick?.(transactionId);
+  };
+
+  const handleEditTransaction = () => {
+    setMenuOpen(false);
+    onEditClick?.(transactionId);
   };
 
   return (
@@ -85,9 +90,7 @@ export const LatestTransactions = memo(function LatestTransactions({
         <p className="text-sm text-slate-500">{date}</p>
       </div>
       <div className="flex items-center gap-2">
-        <span className={`font-medium ${amountColor}`}>
-          {displayAmount}
-        </span>
+        <span className={`font-medium ${amountColor}`}>{displayAmount}</span>
         {hasActions && (
           <div className="relative" ref={menuRef}>
             <Button
@@ -113,19 +116,15 @@ export const LatestTransactions = memo(function LatestTransactions({
                   type="button"
                   role="menuitem"
                   className="w-full px-3 py-2 text-left text-sm hover:bg-slate-100"
-                  onClick={handleDeleteClick}
+                  onClick={handleDeleteTransaction}
                 >
                   Deletar
                 </button>
                 <button
                   type="button"
                   role="menuitem"
-                  disabled
-                  aria-disabled
-                  className={cn(
-                    'w-full px-3 py-2 text-left text-sm text-slate-400',
-                    'cursor-not-allowed opacity-60',
-                  )}
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-slate-100"
+                  onClick={handleEditTransaction}
                 >
                   Editar
                 </button>

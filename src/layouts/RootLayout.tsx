@@ -11,6 +11,7 @@ import {format, parse} from 'date-fns';
 export interface RootLayoutContext {
   transactions: Transaction[];
   onDeleteTransaction: (id: string) => void;
+  onEditTransaction: (id: string, data: TransactionFormData) => void;
 }
 
 export const RootLayout = () => {
@@ -38,9 +39,36 @@ export const RootLayout = () => {
     setTransactions(prev => prev.filter(transaction => transaction.id !== id));
   }, []);
 
+  const handleEditTransaction = useCallback(
+    (id: string, data: TransactionFormData) => {
+      const transactionDate = parse(data.date, 'yyyy-MM-dd', new Date());
+      const formattedDate = format(transactionDate, 'dd/MM/yyyy');
+
+      setTransactions(prev =>
+        prev.map(transaction =>
+          transaction.id === id
+            ? {
+                ...transaction,
+                name: data.name,
+                amount: data.amount,
+                type: data.type,
+                date: formattedDate,
+                description: data.description,
+              }
+            : transaction,
+        ),
+      );
+    },
+    [],
+  );
+
   const outletContext = useMemo<RootLayoutContext>(
-    () => ({transactions, onDeleteTransaction: handleDeleteTransaction}),
-    [transactions, handleDeleteTransaction],
+    () => ({
+      transactions,
+      onDeleteTransaction: handleDeleteTransaction,
+      onEditTransaction: handleEditTransaction,
+    }),
+    [transactions, handleDeleteTransaction, handleEditTransaction],
   );
 
   return (
