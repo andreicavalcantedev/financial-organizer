@@ -7,6 +7,7 @@ import type {
   TransactionFormData,
 } from '../hooks/useAddNewTransaction/types';
 import {format, parse} from 'date-fns';
+import {useLocalStorage} from 'usehooks-ts';
 
 export interface RootLayoutContext {
   transactions: Transaction[];
@@ -17,27 +18,38 @@ export interface RootLayoutContext {
 export const RootLayout = () => {
   const [isAddNewTransactionModalOpened, setIsAddNewTransactionModalOpened] =
     useState<boolean>(false);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
+    'financial-organizer-transactions',
+    [],
+  );
 
-  const handleAddTransaction = useCallback((data: TransactionFormData) => {
-    const transactionDate = parse(data.date, 'yyyy-MM-dd', new Date());
-    const formattedDate = format(transactionDate, 'dd/MM/yyyy');
+  const handleAddTransaction = useCallback(
+    (data: TransactionFormData) => {
+      const transactionDate = parse(data.date, 'yyyy-MM-dd', new Date());
+      const formattedDate = format(transactionDate, 'dd/MM/yyyy');
 
-    const newTransaction: Transaction = {
-      id: crypto.randomUUID(),
-      name: data.name,
-      amount: data.amount,
-      type: data.type,
-      date: formattedDate,
-      description: data.description,
-    };
+      const newTransaction: Transaction = {
+        id: crypto.randomUUID(),
+        name: data.name,
+        amount: data.amount,
+        type: data.type,
+        date: formattedDate,
+        description: data.description,
+      };
 
-    setTransactions(prev => [newTransaction, ...prev]);
-  }, []);
+      setTransactions(prev => [newTransaction, ...prev]);
+    },
+    [setTransactions],
+  );
 
-  const handleDeleteTransaction = useCallback((id: string) => {
-    setTransactions(prev => prev.filter(transaction => transaction.id !== id));
-  }, []);
+  const handleDeleteTransaction = useCallback(
+    (id: string) => {
+      setTransactions(prev =>
+        prev.filter(transaction => transaction.id !== id),
+      );
+    },
+    [setTransactions],
+  );
 
   const handleEditTransaction = useCallback(
     (id: string, data: TransactionFormData) => {
@@ -59,7 +71,7 @@ export const RootLayout = () => {
         ),
       );
     },
-    [],
+    [setTransactions],
   );
 
   const outletContext = useMemo<RootLayoutContext>(
