@@ -3,6 +3,7 @@ import {Button} from '../ui/button';
 import type {Transaction} from '@/hooks/useAddNewTransaction/types';
 import {json2csv} from 'json-2-csv';
 import {downloadCSV} from '@/utils/downloadCSV';
+import {ModalContainer} from '../ModalContainer/ModalContainer';
 
 interface ExportDataModalProps {
   isOpen: boolean;
@@ -15,8 +16,6 @@ export const ExportDataModal = memo(function ExportDataModal({
   transactions,
   onClose,
 }: ExportDataModalProps) {
-  if (!isOpen) return null;
-
   async function handleConfirm() {
     const creationDate = new Date().toISOString().split('T')[0];
     const csv = json2csv(transactions);
@@ -26,8 +25,7 @@ export const ExportDataModal = memo(function ExportDataModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black opacity-50" aria-hidden />
+    <ModalContainer isOpen={isOpen}>
       <div
         className="relative max-w-md w-full rounded-lg bg-white p-6 shadow-lg"
         role="dialog"
@@ -50,6 +48,6 @@ export const ExportDataModal = memo(function ExportDataModal({
           <Button onClick={handleConfirm}>Confirmar</Button>
         </div>
       </div>
-    </div>
+    </ModalContainer>
   );
 });

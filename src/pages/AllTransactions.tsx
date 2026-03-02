@@ -4,22 +4,26 @@ import {ChartLineMultiple} from '../components/Charts/ChartLineMultiple';
 import {DeleteTransactionModal} from '../components/DeleteTransactionModal/DeleteTransactionModal';
 import {EditTransactionModal} from '../components/EditTransactionModal/EditTransactionModal';
 import {ExportDataModal} from '../components/ExportDataModal/ExportDataModal';
-import {Button} from '../components/ui/button';
 import {LatestTransactions} from '../components/LatestTransactions/LatestTransactions';
 import type {Transaction} from '../hooks/useAddNewTransaction/types';
 import type {RootLayoutContext} from '../layouts/RootLayout';
 import {ArrowLeft} from 'lucide-react';
+import MenuActions from '@/components/MenuActions/MenuActions';
+import {ImportDataModal} from '@/components/ImportDataModal/ImportDataModal';
 
 export const AllTransactions = () => {
-  const {transactions, onDeleteTransaction, onEditTransaction} =
-    useOutletContext<RootLayoutContext>();
+  const {
+    transactions,
+    onDeleteTransaction,
+    onEditTransaction,
+    setTransactions,
+  } = useOutletContext<RootLayoutContext>();
   const [transactionToDelete, setTransactionToDelete] =
     useState<Transaction | null>(null);
   const [transactionToEdit, setTransactionToEdit] =
     useState<Transaction | null>(null);
-  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
-
-  const hasTransactions = transactions.length > 0;
+  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
 
   const handleDeleteClick = useCallback(
     (transactionId: string) => {
@@ -60,6 +64,22 @@ export const AllTransactions = () => {
     setIsExportModalOpen(false);
   }, []);
 
+  const handleCloseImportModal = useCallback(() => {
+    setIsImportModalOpen(false);
+  }, []);
+
+  const handleImportTransactions = useCallback(
+    (transactions: Transaction[]) => {
+      setTransactions(prev => [...prev, ...transactions]);
+    },
+    [setTransactions],
+  );
+
+  const menuOptions = [
+    {label: 'Exportar dados', onClick: () => setIsExportModalOpen(true)},
+    {label: 'Importar dados', onClick: () => setIsImportModalOpen(true)},
+  ];
+
   return (
     <section>
       <div className="flex items-center justify-between gap-4">
@@ -73,13 +93,8 @@ export const AllTransactions = () => {
           </Link>
           <h2 className="text-lg font-semibold">Todas as transações</h2>
         </div>
-        <Button
-          disabled={!hasTransactions}
-          variant={!hasTransactions ? 'outline' : 'default'}
-          onClick={() => setIsExportModalOpen(true)}
-        >
-          Exportar dados
-        </Button>
+
+        <MenuActions options={menuOptions} />
       </div>
 
       <div className="mt-4">
@@ -109,7 +124,8 @@ export const AllTransactions = () => {
       />
 
       <EditTransactionModal
-        key={transactionToEdit?.id ?? 'closed'}
+        key={transactionToEdit?.id}
+        isOpen={transactionToEdit !== null}
         transaction={transactionToEdit}
         onClose={handleCloseEditModal}
         onConfirm={onEditTransaction}
@@ -119,6 +135,12 @@ export const AllTransactions = () => {
         isOpen={isExportModalOpen}
         transactions={transactions}
         onClose={handleCloseExportModal}
+      />
+
+      <ImportDataModal
+        isOpen={isImportModalOpen}
+        onClose={handleCloseImportModal}
+        onImport={handleImportTransactions}
       />
     </section>
   );

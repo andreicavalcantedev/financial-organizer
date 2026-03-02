@@ -1,4 +1,10 @@
-import {useCallback, useMemo, useState} from 'react';
+import {
+  useCallback,
+  useMemo,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import {Outlet, Link} from 'react-router-dom';
 import {AddNewTransactionModal} from '../components/AddNewTransactionModal/AddNewTransactionModal';
 import {Button} from '../components/ui/button';
@@ -13,6 +19,7 @@ export interface RootLayoutContext {
   transactions: Transaction[];
   onDeleteTransaction: (id: string) => void;
   onEditTransaction: (id: string, data: TransactionFormData) => void;
+  setTransactions: Dispatch<SetStateAction<Transaction[]>>;
 }
 
 export const RootLayout = () => {
@@ -79,8 +86,14 @@ export const RootLayout = () => {
       transactions,
       onDeleteTransaction: handleDeleteTransaction,
       onEditTransaction: handleEditTransaction,
+      setTransactions,
     }),
-    [transactions, handleDeleteTransaction, handleEditTransaction],
+    [
+      transactions,
+      handleDeleteTransaction,
+      handleEditTransaction,
+      setTransactions,
+    ],
   );
 
   return (

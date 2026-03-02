@@ -1,5 +1,6 @@
 import {memo} from 'react';
 import {Button} from '../ui/button';
+import {ModalContainer} from '../ModalContainer/ModalContainer';
 
 interface DeleteTransactionModalProps {
   isOpen: boolean;
@@ -14,16 +15,13 @@ export const DeleteTransactionModal = memo(function DeleteTransactionModal({
   transactionName,
   onConfirm,
 }: DeleteTransactionModalProps) {
-  if (!isOpen) return null;
-
   const handleConfirm = () => {
     onConfirm();
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black opacity-50" aria-hidden />
+    <ModalContainer isOpen={isOpen}>
       <div
         className="relative max-w-md w-full rounded-lg bg-white p-6 shadow-lg"
         role="dialog"
@@ -37,12 +35,8 @@ export const DeleteTransactionModal = memo(function DeleteTransactionModal({
         >
           Deletar transação
         </h2>
-        <p
-          id="delete-transaction-description"
-          className="mb-6 text-slate-600"
-        >
-          A transação {transactionName} será removida. Deseja
-          continuar?
+        <p id="delete-transaction-description" className="mb-6 text-slate-600">
+          A transação {transactionName} será removida. Deseja continuar?
         </p>
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={onClose}>
@@ -53,6 +47,6 @@ export const DeleteTransactionModal = memo(function DeleteTransactionModal({
           </Button>
         </div>
       </div>
-    </div>
+    </ModalContainer>
   );
 });

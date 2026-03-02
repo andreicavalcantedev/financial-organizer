@@ -10,8 +10,10 @@ import type {
   TransactionFormData,
 } from '@/hooks/useAddNewTransaction/types';
 import {useEditTransaction} from '@/hooks/useEditTransaction/useEditTransaction';
+import {ModalContainer} from '../ModalContainer/ModalContainer';
 
 interface EditTransactionModalProps {
+  isOpen: boolean;
   transaction: Transaction | null;
   onClose: () => void;
   onConfirm: (id: string, data: TransactionFormData) => void;
@@ -23,6 +25,7 @@ function toInputDate(displayDate: string): string {
 }
 
 export const EditTransactionModal = ({
+  isOpen,
   transaction,
   onClose,
   onConfirm,
@@ -46,17 +49,15 @@ export const EditTransactionModal = ({
     isFormValid,
   } = useEditTransaction(initialData);
 
-  if (!transaction) return null;
-
   const handleConfirm = () => {
-    if (!isFormValid) return;
+    if (!transaction) return;
+
     onConfirm(transaction.id, formData);
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black opacity-50" aria-hidden />
+    <ModalContainer isOpen={isOpen}>
       <div
         className="relative rounded-lg bg-white p-6 shadow-lg max-w-md w-full"
         role="dialog"
@@ -93,10 +94,7 @@ export const EditTransactionModal = ({
 
           <div className="space-y-2">
             <Label htmlFor="edit-amount">Valor *</Label>
-            <InputMoney
-              value={formData.amount}
-              onChange={handleAmountChange}
-            />
+            <InputMoney value={formData.amount} onChange={handleAmountChange} />
           </div>
 
           <div className="space-y-2">
@@ -131,6 +129,6 @@ export const EditTransactionModal = ({
           </Button>
         </div>
       </div>
-    </div>
+    </ModalContainer>
   );
 };
