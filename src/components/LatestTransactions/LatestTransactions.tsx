@@ -1,14 +1,13 @@
 import {memo} from 'react';
 import MenuActions from '../MenuActions/MenuActions';
+import type {TransactionType} from '@/hooks/useAddNewTransaction/types';
 
 interface LatestTransactionsProps {
   title: string;
-  transactionType: string;
+  transactionType: TransactionType;
   date?: string;
   amount: number;
-  transactionId: string;
-  onDeleteClick?: (transactionId: string) => void;
-  onEditClick?: (transactionId: string) => void;
+  buttonActions?: {label: string; onClick: () => void}[];
 }
 
 export const LatestTransactions = memo(function LatestTransactions({
@@ -16,9 +15,7 @@ export const LatestTransactions = memo(function LatestTransactions({
   transactionType,
   date,
   amount,
-  transactionId,
-  onDeleteClick,
-  onEditClick,
+  buttonActions,
 }: LatestTransactionsProps) {
   const isIncome = transactionType === 'income';
   const amountColor = isIncome ? 'text-emerald-600' : 'text-rose-600';
@@ -31,19 +28,6 @@ export const LatestTransactions = memo(function LatestTransactions({
     ? `+ ${formattedAmount}`
     : `- ${formattedAmount}`;
 
-  const handleDeleteTransaction = () => {
-    onDeleteClick?.(transactionId);
-  };
-
-  const handleEditTransaction = () => {
-    onEditClick?.(transactionId);
-  };
-
-  const menuOptions = [
-    {label: 'Editar', onClick: handleEditTransaction},
-    {label: 'Deletar', onClick: handleDeleteTransaction},
-  ];
-
   return (
     <li className="flex items-center justify-between px-4 py-3">
       <div>
@@ -52,7 +36,9 @@ export const LatestTransactions = memo(function LatestTransactions({
       </div>
       <div className="flex items-center gap-2">
         <span className={`font-medium ${amountColor}`}>{displayAmount}</span>
-        <MenuActions options={menuOptions} />
+        {buttonActions ? (
+          <MenuActions key={`${title}-${date}`} options={buttonActions} />
+        ) : null}
       </div>
     </li>
   );

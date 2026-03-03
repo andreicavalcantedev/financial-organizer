@@ -73,6 +73,7 @@ const MenuActions = ({options}: MenuActionsProps) => {
           {options.map(option => {
             return (
               <button
+                key={option.label}
                 type="button"
                 role="menuitem"
                 className="w-full px-3 py-2 text-left text-sm hover:bg-slate-100"

@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import {Link, useOutletContext} from 'react-router-dom';
 import {ChartLineMultiple} from '../components/Charts/ChartLineMultiple';
 import {DeleteTransactionModal} from '../components/DeleteTransactionModal/DeleteTransactionModal';
@@ -75,10 +75,13 @@ export const AllTransactions = () => {
     [setTransactions],
   );
 
-  const menuOptions = [
-    {label: 'Exportar dados', onClick: () => setIsExportModalOpen(true)},
-    {label: 'Importar dados', onClick: () => setIsImportModalOpen(true)},
-  ];
+  const menuOptions = useMemo(
+    () => [
+      {label: 'Exportar dados', onClick: () => setIsExportModalOpen(true)},
+      {label: 'Importar dados', onClick: () => setIsImportModalOpen(true)},
+    ],
+    [],
+  );
 
   return (
     <section>
@@ -105,13 +108,17 @@ export const AllTransactions = () => {
         {transactions.map(transaction => (
           <LatestTransactions
             key={transaction.id}
-            transactionId={transaction.id}
             title={transaction.name}
             transactionType={transaction.type}
             date={transaction.date}
             amount={transaction.amount}
-            onDeleteClick={handleDeleteClick}
-            onEditClick={handleEditClick}
+            buttonActions={[
+              {label: 'Editar', onClick: () => handleEditClick(transaction.id)},
+              {
+                label: 'Deletar',
+                onClick: () => handleDeleteClick(transaction.id),
+              },
+            ]}
           />
         ))}
       </ul>
