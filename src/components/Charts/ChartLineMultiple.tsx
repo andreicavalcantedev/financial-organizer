@@ -56,12 +56,12 @@ export const ChartLineMultiple = memo(function ChartLineMultiple({
   const hasData = totalIncome > 0 || totalExpense > 0;
 
   return (
-    <Card>
+    <Card className="flex flex-col top-1 p-0 pt-4">
       <CardHeader>
         <CardTitle>Receitas vs Gastos</CardTitle>
         <CardDescription>Evolução mensal em {currentYear}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1 p-0">
         {hasData ? (
           <ChartContainer config={chartConfig} className="h-[300px] w-full">
             <LineChart
@@ -116,7 +116,7 @@ export const ChartLineMultiple = memo(function ChartLineMultiple({
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
+      <CardFooter className="flex-col gap-1 text-sm">
         <div className="flex gap-4 leading-none font-medium">
           <span>Receitas: {formatBRL(totalIncome)}</span>
           <span>Gastos: {formatBRL(totalExpense)}</span>

@@ -10,6 +10,7 @@ import type {RootLayoutContext} from '../layouts/RootLayout';
 import {ArrowLeft} from 'lucide-react';
 import MenuActions from '@/components/MenuActions/MenuActions';
 import {ImportDataModal} from '@/components/ImportDataModal/ImportDataModal';
+import {ClearAllTransactionsModal} from '@/components/ClearAllTransactionsModal/ClearAllTransactionsModal';
 
 export const AllTransactions = () => {
   const {
@@ -24,6 +25,8 @@ export const AllTransactions = () => {
     useState<Transaction | null>(null);
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
+  const [isClearAllModalOpen, setIsClearAllModalOpen] =
+    useState<boolean>(false);
 
   const handleDeleteClick = useCallback(
     (transactionId: string) => {
@@ -75,10 +78,22 @@ export const AllTransactions = () => {
     [setTransactions],
   );
 
+  const handleCloseClearAllModal = useCallback(() => {
+    setIsClearAllModalOpen(false);
+  }, []);
+
+  const handleConfirmClearAll = useCallback(() => {
+    setTransactions([]);
+  }, [setTransactions]);
+
   const menuOptions = useMemo(
     () => [
       {label: 'Exportar dados', onClick: () => setIsExportModalOpen(true)},
       {label: 'Importar dados', onClick: () => setIsImportModalOpen(true)},
+      {
+        label: 'Limpar Transações',
+        onClick: () => setIsClearAllModalOpen(true),
+      },
     ],
     [],
   );
@@ -148,6 +163,12 @@ export const AllTransactions = () => {
         isOpen={isImportModalOpen}
         onClose={handleCloseImportModal}
         onImport={handleImportTransactions}
+      />
+
+      <ClearAllTransactionsModal
+        isOpen={isClearAllModalOpen}
+        onClose={handleCloseClearAllModal}
+        onConfirm={handleConfirmClearAll}
       />
     </section>
   );

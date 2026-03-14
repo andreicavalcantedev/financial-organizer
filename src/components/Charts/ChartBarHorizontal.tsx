@@ -84,7 +84,7 @@ export const ChartBarHorizontal = memo(function ChartBarHorizontal({
   const formattedTotal = formatBRL(total);
 
   return (
-    <Card className="flex flex-col h-full">
+    <Card className="flex flex-col h-full p-0 pt-4">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{currentYear}</CardDescription>

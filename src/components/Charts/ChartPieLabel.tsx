@@ -63,7 +63,7 @@ export const ChartPieLabel = memo(function ChartPieLabel({
   const hasNoTransactions = totalIncome === 0 && totalExpense === 0;
 
   return (
-    <Card className="flex flex-col top-1">
+    <Card className="flex flex-col top-1 p-0 pt-4">
       <CardHeader className="items-center pb-0">
         <CardTitle>{title ?? ''}</CardTitle>
         <CardDescription>{new Date().getFullYear()}</CardDescription>
